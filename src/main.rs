@@ -1,7 +1,7 @@
 mod oscillator;
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use oscillator::oscillator_v1::Oscilltor;
+use oscillator::oscillator_v1::{Oscilltor, Waveform};
 
 fn main() {
     let host = cpal::default_host();
@@ -12,9 +12,11 @@ fn main() {
     let sample_rate = config.sample_rate() as f32;
 
     let mut oscillators = vec![
-        Oscilltor::new(110.0, sample_rate),
-        Oscilltor::new(220.0, sample_rate),
-        Oscilltor::new(330.0, sample_rate),
+        Oscilltor::new(150.0, sample_rate, Waveform::Sine),
+        Oscilltor::new(70.0, sample_rate, Waveform::Saw),
+        Oscilltor::new(60.0, sample_rate, Waveform::Square),
+        Oscilltor::new(120.0, sample_rate, Waveform::Triangle),
+        Oscilltor::new(80.0, sample_rate, Waveform::Noice),
     ];
 
     let stream = device
@@ -25,7 +27,7 @@ fn main() {
                     let mut mixed = 0.0;
 
                     for osc in oscillators.iter_mut() {
-                        mixed += osc.next_sample() * 0.2;
+                        mixed += osc.next_sample() * 0.4;
                     }
 
                     *sample = mixed;
