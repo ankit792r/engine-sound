@@ -1,7 +1,10 @@
+mod cylinder;
+mod engine;
 mod oscillator;
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use oscillator::oscillator_v1::{Oscillator, Waveform};
+
+use crate::engine::Engine;
 
 fn main() {
     let host = cpal::default_host();
@@ -11,28 +14,14 @@ fn main() {
 
     let sample_rate = config.sample_rate() as f32;
 
-    let mut oscillators = vec![
-        // Oscillator::new(590.0, sample_rate, Waveform::Sine),
-        // Oscillator::new(420.0, sample_rate, Waveform::Sine),
-        Oscillator::new(800.0, sample_rate, Waveform::Sine),
-        Oscillator::new(80.0, sample_rate, Waveform::Saw),
-        // Oscillator::new(90.0, sample_rate, Waveform::Square),
-        // Oscillator::new(200.0, sample_rate, Waveform::Triangle),
-        // Oscillator::new(0.10, sample_rate, Waveform::Noise),
-    ];
+    let mut eng = Engine::v8(400.0, sample_rate);
 
     let stream = device
         .build_output_stream(
             &config.into(),
             move |data: &mut [f32], _| {
                 for sample in data.iter_mut() {
-                    let mut mixed = 0.0;
-
-                    for osc in oscillators.iter_mut() {
-                        mixed += osc.next_sample();
-                    }
-
-                    *sample = mixed;
+                    *sample = eng.next_sample() * 3.0;
                 }
             },
             move |err| {
