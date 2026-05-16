@@ -12,11 +12,13 @@ fn main() {
     let sample_rate = config.sample_rate() as f32;
 
     let mut oscillators = vec![
-        Oscillator::new(150.0, sample_rate, Waveform::Sine),
-        Oscillator::new(70.0, sample_rate, Waveform::Saw),
-        Oscillator::new(60.0, sample_rate, Waveform::Square),
-        Oscillator::new(120.0, sample_rate, Waveform::Triangle),
-        Oscillator::new(80.0, sample_rate, Waveform::Noise),
+        // Oscillator::new(590.0, sample_rate, Waveform::Sine),
+        // Oscillator::new(420.0, sample_rate, Waveform::Sine),
+        Oscillator::new(800.0, sample_rate, Waveform::Sine),
+        Oscillator::new(80.0, sample_rate, Waveform::Saw),
+        // Oscillator::new(90.0, sample_rate, Waveform::Square),
+        // Oscillator::new(200.0, sample_rate, Waveform::Triangle),
+        // Oscillator::new(0.10, sample_rate, Waveform::Noise),
     ];
 
     let stream = device
@@ -27,7 +29,7 @@ fn main() {
                     let mut mixed = 0.0;
 
                     for osc in oscillators.iter_mut() {
-                        mixed += osc.next_sample() * 0.4;
+                        mixed += osc.next_sample();
                     }
 
                     *sample = mixed;
@@ -43,5 +45,5 @@ fn main() {
     stream.play().unwrap();
 
     println!("playing 440Hz tone");
-    std::thread::sleep(std::time::Duration::from_secs(5));
+    std::thread::sleep(std::time::Duration::from_secs(10));
 }

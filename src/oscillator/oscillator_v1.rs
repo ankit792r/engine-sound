@@ -33,7 +33,6 @@ impl Oscillator {
     }
 
     pub fn next_sample(&mut self) -> f32 {
-        // thread::sleep(Duration::from_millis(1));
         let sample = match self.waveform {
             Waveform::Sine => (2.0 * PI * self.phase).sin(),
             Waveform::Saw => 2.0 * self.phase - 1.0,
@@ -44,10 +43,10 @@ impl Oscillator {
                     -1.0
                 }
             }
-            Waveform::Triangle => 2.0 * (2.0 * self.phase - 1.0).abs() - 1.0,
+            Waveform::Triangle => 2.0 * (16.0 * self.phase - 1.0).abs() -1.0,
             Waveform::Noise => self.generate_noise(),
         };
-        self.phase += self.frequency / self.sample_rate;
+        self.phase += self.frequency / self.sample_rate * 0.08;
 
         if self.phase >= 1.0 {
             self.phase -= 1.0;
