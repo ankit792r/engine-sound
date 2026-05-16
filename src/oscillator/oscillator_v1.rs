@@ -1,23 +1,23 @@
 use std::f32::consts::PI;
 
-use rand::{RngExt, rngs::ThreadRng};
+use rand::RngExt;
 
 pub enum Waveform {
     Sine,
     Saw,
     Square,
-    Noice,
+    Noise,
     Triangle,
 }
 
-pub struct Oscilltor {
+pub struct Oscillator {
     pub phase: f32,
     pub frequency: f32,
     pub sample_rate: f32,
     pub waveform: Waveform,
 }
 
-impl Oscilltor {
+impl Oscillator {
     pub fn new(frequency: f32, sample_rate: f32, waveform: Waveform) -> Self {
         Self {
             phase: 0.0,
@@ -27,12 +27,13 @@ impl Oscilltor {
         }
     }
 
-    fn generate_noice(&self) -> f32 {
+    fn generate_noise(&self) -> f32 {
         let mut rng = rand::rng();
         rng.random_range(-1.0..1.0)
     }
 
     pub fn next_sample(&mut self) -> f32 {
+        // thread::sleep(Duration::from_millis(1));
         let sample = match self.waveform {
             Waveform::Sine => (2.0 * PI * self.phase).sin(),
             Waveform::Saw => 2.0 * self.phase - 1.0,
@@ -44,7 +45,7 @@ impl Oscilltor {
                 }
             }
             Waveform::Triangle => 2.0 * (2.0 * self.phase - 1.0).abs() - 1.0,
-            Waveform::Noice => self.generate_noice(),
+            Waveform::Noise => self.generate_noise(),
         };
         self.phase += self.frequency / self.sample_rate;
 

@@ -1,7 +1,7 @@
 mod oscillator;
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use oscillator::oscillator_v1::{Oscilltor, Waveform};
+use oscillator::oscillator_v1::{Oscillator, Waveform};
 
 fn main() {
     let host = cpal::default_host();
@@ -12,11 +12,11 @@ fn main() {
     let sample_rate = config.sample_rate() as f32;
 
     let mut oscillators = vec![
-        Oscilltor::new(150.0, sample_rate, Waveform::Sine),
-        Oscilltor::new(70.0, sample_rate, Waveform::Saw),
-        Oscilltor::new(60.0, sample_rate, Waveform::Square),
-        Oscilltor::new(120.0, sample_rate, Waveform::Triangle),
-        Oscilltor::new(80.0, sample_rate, Waveform::Noice),
+        Oscillator::new(150.0, sample_rate, Waveform::Sine),
+        Oscillator::new(70.0, sample_rate, Waveform::Saw),
+        Oscillator::new(60.0, sample_rate, Waveform::Square),
+        Oscillator::new(120.0, sample_rate, Waveform::Triangle),
+        Oscillator::new(80.0, sample_rate, Waveform::Noise),
     ];
 
     let stream = device
@@ -43,5 +43,5 @@ fn main() {
     stream.play().unwrap();
 
     println!("playing 440Hz tone");
-    std::thread::sleep(std::time::Duration::from_secs(1000));
+    std::thread::sleep(std::time::Duration::from_secs(5));
 }
