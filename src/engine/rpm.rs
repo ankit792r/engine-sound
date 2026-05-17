@@ -18,7 +18,7 @@ impl RpmDynamics {
             inertia: 0.02,
             friction: 0.01,
 
-            idle_rpm: 0.0,
+            idle_rpm: 100.0,
             max_rpm: 8000.0,
         }
     }
