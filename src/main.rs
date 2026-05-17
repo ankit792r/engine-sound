@@ -2,9 +2,8 @@ mod cylinder;
 mod engine;
 mod oscillator;
 
+use crate::engine::engine::Engine;
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-
-use crate::engine::Engine;
 
 fn main() {
     let host = cpal::default_host();

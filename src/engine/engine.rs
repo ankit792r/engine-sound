@@ -1,4 +1,11 @@
-use crate::cylinder::cylinder_v1::{Cylinder, Waveform};
+use crate::{
+    cylinder::cylinder_v1::{Cylinder, Waveform},
+    engine::{
+        rpm::RpmDynamics,
+        throttle::{self, Throttle},
+        torque::{self, TorqueCurve},
+    },
+};
 
 pub enum EngineType {
     V8,
@@ -12,33 +19,54 @@ pub struct Engine {
     current_rpm: f32,
     target_rpm: f32,
     rpm_velocity: f32,
-    throttle: f32,
 
     load: f32,
     idle_rpm: f32,
     max_rpm: f32,
     inertia: f32,
+
+    throttle: Throttle,
+    torque_curve: TorqueCurve,
+    rpm_dynamics: RpmDynamics,
 }
 
 impl Engine {
     pub fn new(sample_rate: f32) -> Self {
         let cylinders = Self::make_cylinders(EngineType::Inline4, sample_rate);
+        let throttle = Throttle::new();
+        let rpm_dynamics = RpmDynamics::new();
+        let torque_curve = TorqueCurve::new();
         Self {
             cylinders,
             current_rpm: 0.0,
             target_rpm: 0.0,
-            throttle: 0.01,
             rpm_velocity: 0.0,
             load: 0.0,
             idle_rpm: 0.0,
             max_rpm: 1500.0,
             inertia: 0.0,
+            throttle,
+            torque_curve,
+            rpm_dynamics,
         }
     }
 
+    pub fn update(&mut self) {
+        self.throttle.update();
+
+        let torque = self
+            .torque_curve
+            .get_torque(self.rpm_dynamics.rpm, self.throttle.value());
+
+        self.rpm_dynamics.update(torque);
+    }
+
     pub fn next_sample(&mut self) -> f32 {
+        self.update();
         // smooth rpm transition
-        self.current_rpm += (self.target_rpm - self.current_rpm) * self.throttle;
+        // self.current_rpm += (self.target_rpm - self.current_rpm) * 0.001;
+
+        self.current_rpm = self.rpm_dynamics.rpm;
 
         let mut sample = 0.0;
 
