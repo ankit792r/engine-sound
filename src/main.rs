@@ -14,7 +14,8 @@ fn main() {
 
     let sample_rate = config.sample_rate() as f32;
 
-    let mut eng = Engine::v8(400.0, sample_rate);
+    let mut eng = Engine::new(sample_rate);
+    eng.set_rpm(200.0);
 
     let stream = device
         .build_output_stream(
