@@ -12,13 +12,13 @@ pub struct RpmDynamics {
 impl RpmDynamics {
     pub fn new() -> Self {
         Self {
-            rpm: 900.0,
+            rpm: 0.0,
             rpm_velocity: 0.0,
 
             inertia: 0.02,
             friction: 0.01,
 
-            idle_rpm: 900.0,
+            idle_rpm: 0.0,
             max_rpm: 8000.0,
         }
     }

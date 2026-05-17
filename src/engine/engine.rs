@@ -54,9 +54,15 @@ impl Engine {
     pub fn update(&mut self) {
         self.throttle.update();
 
-        let torque = self
-            .torque_curve
-            .get_torque(self.rpm_dynamics.rpm, self.throttle.value());
+        let torque = self.throttle.value() * 15.0;
+        self.rpm_velocity += torque;
+        self.rpm_velocity *= 0.98;
+        self.current_rpm += self.rpm_velocity;
+        self.current_rpm = self.current_rpm.clamp(900.0, 8000.0);
+
+        // let torque = self
+        //     .torque_curve
+        //     .get_torque(self.rpm_dynamics.rpm, self.throttle.value());
 
         self.rpm_dynamics.update(torque);
     }
