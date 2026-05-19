@@ -2,6 +2,9 @@ pub struct Throttle {
     value: f32,
     target: f32,
     response_speed: f32,
+
+    rise_speed: f32,
+    fall_speed: f32,
 }
 
 impl Throttle {
@@ -10,11 +13,21 @@ impl Throttle {
             value: 0.0,
             target: 0.0,
             response_speed: 0.01,
+
+            rise_speed: 0.015,
+            fall_speed: 0.01,
         }
     }
 
     pub fn update(&mut self) {
-        self.value += (self.target - self.value) * self.response_speed;
+        let speed = if self.target > self.value {
+            self.rise_speed
+        } else {
+            self.fall_speed
+        };
+
+        self.value += (self.target - self.value) * speed;
+        // self.value += (self.target - self.value) * self.response_speed;
     }
 
     pub fn set_target(&mut self, target: f32) {

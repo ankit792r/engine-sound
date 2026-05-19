@@ -5,4 +5,5 @@ edition = "2024"
 
 [dependencies]
 cpal = "0.17.3"
+crossterm = "0.29.0"
 rand = "0.10.1"

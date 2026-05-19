@@ -18,7 +18,6 @@ pub struct Engine {
     cylinders: Vec<Cylinder>,
     current_rpm: f32,
     target_rpm: f32,
-    rpm_velocity: f32,
 
     load: f32,
     idle_rpm: f32,
@@ -40,7 +39,6 @@ impl Engine {
             cylinders,
             current_rpm: 0.0,
             target_rpm: 0.0,
-            rpm_velocity: 0.0,
             load: 0.0,
             idle_rpm: 0.0,
             max_rpm: 1500.0,
@@ -55,9 +53,6 @@ impl Engine {
         self.throttle.update();
 
         let torque = self.throttle.value() * 15.0;
-        self.rpm_velocity += torque;
-        self.rpm_velocity *= 0.98;
-        self.current_rpm += self.rpm_velocity;
         self.current_rpm = self.current_rpm.clamp(900.0, 8000.0);
 
         // let torque = self
@@ -78,6 +73,7 @@ impl Engine {
 
         for cylinder in &mut self.cylinders {
             sample += cylinder.next_sample(self.current_rpm);
+            // sample = sample.tanh();
         }
 
         // normalize: this will reduce the sound based on number of cylinders
@@ -87,6 +83,10 @@ impl Engine {
 
     pub fn set_rpm(&mut self, rpm: f32) {
         self.target_rpm = rpm;
+    }
+
+    pub fn set_throttle(&mut self, value: f32) {
+        self.throttle.set_target(value);
     }
 }
 
